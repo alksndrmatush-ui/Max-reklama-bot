@@ -16,6 +16,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Установить сертификаты Минцифры
+        run: |
+          sudo curl -k -L -o /usr/local/share/ca-certificates/russian_trusted_root_ca.crt \
+            https://gu-st.ru/content/Other/doc/russian_trusted_root_ca.cer
+          sudo update-ca-certificates
+
       - name: Запустить бота
         env:
           MAX_BOT_TOKEN: ${{ secrets.MAX_BOT_TOKEN }}

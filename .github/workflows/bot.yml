@@ -6,6 +6,7 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Получить код бота
@@ -16,14 +17,17 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Установить сертификаты Минцифры
+      - name: Установить сертификаты
         run: |
-          sudo curl -k -L -o /usr/local/share/ca-certificates/russian_trusted_root_ca.crt \
-            https://gu-st.ru/content/Other/doc/russian_trusted_root_ca.cer
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade certifi
+          sudo apt-get update
+          sudo apt-get install -y ca-certificates
           sudo update-ca-certificates
 
       - name: Запустить бота
         env:
           MAX_BOT_TOKEN: ${{ secrets.MAX_BOT_TOKEN }}
+          SSL_CERT_FILE: ${{ env.pythonLocation }}/lib/python3.12/site-packages/certifi/cacert.pem
         run: |
           python main.py
